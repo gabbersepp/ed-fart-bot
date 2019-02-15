@@ -3,17 +3,26 @@ class CommandRegistry {
         this.map = {};
     }
 
-    register(commands, fn) {
-        commands.forEach(x => this.map[x] = fn);
+    register(commands, fn, hasParam = false) {
+        commands.forEach(x => this.map[x] = { fn: fn, hasParam: hasParam });
     }
 
     execute(command, settings) {
         const cmd = this.map[command];
         if (cmd) {
-            return cmd(settings);
+            return cmd.fn(settings);
         }
 
         return null;
+    }
+
+    needsParameter(command) {
+        const cmd = this.map[command];
+        if (cmd) {
+            return cmd.hasParam;
+        }
+
+        return false;
     }
 }
 
