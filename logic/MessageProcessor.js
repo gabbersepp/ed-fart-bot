@@ -48,10 +48,10 @@ export default class MessageProcessor {
 
         // remove slash if exists
         let command = "";
-        if (text.indexOf("/") > -1) {
-            command = text.substr(offset + 1, length - 1);
+        if (trimmed.indexOf("/") > -1) {
+            command = trimmed.substr(offset + 1, length - 1);
         } else {
-            command = text.substr(offset, length);
+            command = trimmed.substr(offset, length);
         }
 
         const parameterIndex = trimmed.indexOf(" ", offset + length);
@@ -67,6 +67,6 @@ export default class MessageProcessor {
     }
 
     cleanMessage(text) {
-        return text.replace(/\s{2,}/g, " ").trim();
+        return text.replace(/@[^\s]+/, "").replace(/\s{2,}/g, " ").trim();
     }
 }
