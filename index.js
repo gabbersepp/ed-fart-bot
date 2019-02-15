@@ -8,9 +8,9 @@ console.log(process.env["TELEGRAM_BOT_TOKEN"]);
 
 const slimbot = new Slimbot(process.env['TELEGRAM_BOT_TOKEN']);
 
-commandRegistry.register("quote", stockController.getQuote);
-commandRegistry.register("lastearnings", earningsController.lastEarnings);
-commandRegistry.register("nextearnings", earningsController.lastEarningsTweet.bind(null, getTwitterAuthOptions()));
+commandRegistry.register(["quote", "q"], stockController.getQuote);
+commandRegistry.register(["lastearnings", "le"], earningsController.lastEarnings);
+commandRegistry.register(["nextearnings", "ne"], earningsController.lastEarningsTweet.bind(null, getTwitterAuthOptions()));
 
 slimbot.on('message', async message => {
   let result = new MessageProcessor().process(message);
@@ -21,6 +21,10 @@ slimbot.on('message', async message => {
 
   slimbot.sendMessage(message.chat.id, result, { parse_mode: "Markdown" });
 });
+
+/*slimbot.on('inline_query', query => {
+
+});*/
 
 slimbot.startPolling();
 

@@ -3,8 +3,8 @@ class CommandRegistry {
         this.map = {};
     }
 
-    register(command, fn) {
-        this.map[command] = fn;
+    register(commands, fn) {
+        commands.forEach(x => this.map[x] = fn);
     }
 
     execute(command, settings) {
