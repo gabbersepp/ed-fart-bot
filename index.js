@@ -31,34 +31,42 @@ slimbot.on('inline_query', async query => {
     clearTimeout(lastSession.setTimeoutId);
   }
 
-  const sid = setTimeout(async () => {
+  if (query.query.indexOf(" ") == -1) {
+    sendMessage(query.id, "Bitte Symbol eingeben");
+  } else {
+    const sid = setTimeout(async () => {
 
-    console.log(`process query '${query.query}`);
-    let result = new MessageProcessor().processInlineQuery(query);
-
-    if (result.then) {
-      result = await result;
-    }
-
-    let results = JSON.stringify([{
-      'type': 'article',
-      'id': new Date().toString(),
-      'title': result,
-      'description': result,
-      'input_message_content': {
-        'message_text': result,
-        'parse_mode': 'Markdown',
-        'disable_web_page_preview': true
-      }
-    }]);
+      console.log(`process query '${query.query}`);
+      let result = new MessageProcessor().processInlineQuery(query) || {};
   
-    slimbot.answerInlineQuery(query.id, results, { cache_time: 0 });
-  }, 500);
-
-  sessionStore.startSession(userId, { setTimeoutId: sid });
+      if (result.then) {
+        result = await result;
+      }
+  
+      sendMessage(query.id, result || "Kein Ergebnis");
+    }, 500);
+  
+    sessionStore.startSession(userId, { setTimeoutId: sid });
+  }
 });
 
 slimbot.startPolling();
+
+function sendMessage(queryId, result) {
+  let results = JSON.stringify([{
+    'type': 'article',
+    'id': new Date().toString(),
+    'title': result,
+    'description': result,
+    'input_message_content': {
+      'message_text': result,
+      'parse_mode': 'Markdown',
+      'disable_web_page_preview': true
+    }
+  }]);
+
+  slimbot.answerInlineQuery(queryId, results, { cache_time: 0 });
+}
 
 function getTwitterAuthOptions() {
   return {
